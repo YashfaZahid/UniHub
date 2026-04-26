@@ -1,10 +1,8 @@
 import { useState } from "react";
 import { createShop } from "../../api";
-import { supabase } from "../../supabaseClient";
 import "./CreateShop.css";
 
 export default function CreateShop() {
-
   const categories = ["Food", "Fashion", "Electronics", "Services"];
 
   const [tagInput, setTagInput] = useState("");
@@ -35,91 +33,82 @@ export default function CreateShop() {
   };
 
   const removeTag = (index) => {
-    const newTags = formData.tags.filter((_, i) => i !== index);
-
     setFormData({
       ...formData,
-      tags: newTags
+      tags: formData.tags.filter((_, i) => i !== index)
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
+  try {
+    const token = localStorage.getItem("token");
 
-      if (!user) {
-        alert("Please login first");
-        return;
-      }
-
-      const payload = {
-        title: formData.title,
-        description: formData.description,
-        category: formData.category,
-        tags: formData.tags,
-        owner_id: user.id
-      };
-
-      await createShop(payload);
-
-      alert("Shop created!");
-
-    } catch (err) {
-      console.log(err);
+    if (!token) {
+      alert("Please login first");
+      return;
     }
-  };
+
+    const payload = {
+      title: formData.title,
+      description: formData.description,
+      category: formData.category,
+      tags: formData.tags
+    };
+
+    await createShop(payload, token);
+
+    alert("Shop created successfully!");
+    navigate('/feed');
+
+  } catch (err) {
+    const msg = err.response?.data?.error;
+
+    if (msg === "Shop already exists") {
+      alert("⚠️ You already have a shop.");
+      navigate("/feed"); // or "/profile"
+      return;
+    }
+
+    if (err.response?.status === 401) {
+      alert("Session expired. Please login again.");
+      localStorage.removeItem("token");
+      navigate("/login");
+      return;
+    }
+
+    console.log("Create shop error:", err.response?.data || err.message);
+    alert("Error creating shop");
+  }
+};
 
   return (
     <div className="shop-container">
       <div className="shop-card">
 
-        <h2 className="shop-title">Create Shop ✨</h2>
+        <h2 className="shop-title">Create Shop</h2>
 
-        <input
-          className="shop-input"
-          name="title"
-          placeholder="Shop Title"
-          onChange={handleChange}
-        />
+        <input name="title" className="shop-input" placeholder="Shop Title" onChange={handleChange} />
 
-        <input
-          className="shop-input"
-          name="description"
-          placeholder="Description"
-          onChange={handleChange}
-        />
+        <input name="description" className="shop-input" placeholder="Description" onChange={handleChange} />
 
-        <select
-          className="shop-select"
-          name="category"
-          onChange={handleChange}
-        >
-          <option value="" disabled>Select Category</option>
-
-          {categories.map((c, i) => (
-            <option key={i} value={c}>
-              {c}
-            </option>
-          ))}
+        <select name="category" className="shop-select" onChange={handleChange}>
+          <option value="">Select Category</option>
+          {categories.map(c => <option key={c} value={c}>{c}</option>)}
         </select>
 
-        {/* TAG INPUT */}
-        <div>
-          <input
-            className="shop-input"
-            value={tagInput}
-            placeholder="Add tag"
-            onChange={(e) => setTagInput(e.target.value)}
-          />
+        <input
+          className="shop-input"
+          value={tagInput}
+          placeholder="Add tag"
+          onChange={(e) => setTagInput(e.target.value)}
+        />
 
-          <button type="button" className="shop-button" onClick={addTag}>
-            Add Tag
-          </button>
-        </div>
+        <button type="button" className="shop-button" onClick={addTag}>
+          Add Tag
+        </button>
 
-        {/* TAGS */}
         <div className="tag-container">
           {formData.tags.map((tag, i) => (
             <div key={i} className="tag" onClick={() => removeTag(i)}>

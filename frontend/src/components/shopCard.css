@@ -1,0 +1,138 @@
+/* ── Shop Card ───────────────────────────────── */
+.shop-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(108, 99, 255, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+.shop-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 28px rgba(108, 99, 255, 0.16);
+}
+
+/* ── Image ───────────────────────────────────── */
+.shop-card-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+  background: #ede9fa;
+}
+.shop-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+.shop-card:hover .shop-card-img { transform: scale(1.04); }
+
+.shop-category-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(108, 99, 255, 0.88);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  border-radius: 50px;
+  backdrop-filter: blur(4px);
+}
+
+/* ── Body ────────────────────────────────────── */
+.shop-card-body {
+  padding: 16px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+}
+
+.shop-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* ── Owner ───────────────────────────────────── */
+.shop-owner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.owner-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e8e4fd;
+}
+.placeholder-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #6c63ff, #a29bfe);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.owner-name {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+/* ── Description ─────────────────────────────── */
+.shop-desc {
+  font-size: 0.88rem;
+  color: #888;
+  line-height: 1.55;
+  margin: 0;
+  flex: 1;
+}
+
+/* ── Footer ──────────────────────────────────── */
+.shop-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #f0eeff;
+}
+
+.star-rating {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.star { font-size: 0.9rem; color: #ddd; }
+.star.filled { color: #f59e0b; }
+.rating-num {
+  font-size: 0.8rem;
+  color: #888;
+  margin-left: 4px;
+  font-weight: 600;
+}
+
+.view-shop-btn {
+  padding: 6px 14px;
+  background: #f0eeff;
+  color: #6c63ff;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+}
+.view-shop-btn:hover {
+  background: #6c63ff;
+  color: #fff;
+}
