@@ -1,0 +1,185 @@
+/* ── Feed Layout ─────────────────────────────── */
+.feed-wrapper {
+  min-height: 100vh;
+  background: #f4f2fb;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Header ──────────────────────────────────── */
+.feed-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #e5e0f5;
+  box-shadow: 0 1px 8px rgba(108, 99, 255, 0.07);
+}
+
+.feed-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.feed-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #6c63ff;
+  white-space: nowrap;
+}
+.logo-icon { font-size: 1.2rem; }
+
+.feed-search-wrap {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+.feed-search {
+  width: 100%;
+  padding: 10px 40px 10px 40px;
+  border: 1.5px solid #d4cefc;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background: #faf9ff;
+}
+.feed-search:focus { border-color: #6c63ff; background: #fff; }
+.search-clear {
+  position: absolute;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: #999;
+}
+
+/* ── Main ────────────────────────────────────── */
+.feed-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+/* ── Filter Bar ──────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.category-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 6px 16px;
+  border-radius: 50px;
+  border: 1.5px solid #d4cefc;
+  background: #fff;
+  color: #555;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-weight: 500;
+}
+.pill:hover { border-color: #6c63ff; color: #6c63ff; }
+.pill-active {
+  background: #6c63ff;
+  border-color: #6c63ff;
+  color: #fff;
+}
+
+.sort-select {
+  padding: 8px 14px;
+  border: 1.5px solid #d4cefc;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #555;
+  outline: none;
+  cursor: pointer;
+  background: #fff;
+}
+.sort-select:focus { border-color: #6c63ff; }
+
+.results-count {
+  color: #888;
+  font-size: 0.88rem;
+  margin-bottom: 18px;
+}
+
+/* ── Grid ────────────────────────────────────── */
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+/* ── Skeleton ────────────────────────────────── */
+.skeleton { background: #fff; border-radius: 16px; overflow: hidden; }
+.skeleton-img {
+  height: 200px;
+  background: linear-gradient(90deg, #ede9fa 25%, #f5f3ff 50%, #ede9fa 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-body { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #ede9fa 25%, #f5f3ff 50%, #ede9fa 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+}
+.skeleton-line.wide { width: 80%; }
+.skeleton-line.medium { width: 55%; }
+.skeleton-line.narrow { width: 35%; }
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Empty State ─────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: #aaa;
+}
+.empty-icon { font-size: 3rem; display: block; margin-bottom: 16px; }
+.empty-state h3 { font-size: 1.2rem; color: #555; margin: 0 0 8px; }
+.empty-state p { font-size: 0.9rem; }
+
+/* ── Load More ───────────────────────────────── */
+.load-more-wrap { text-align: center; margin-top: 40px; }
+.load-more-btn {
+  padding: 12px 40px;
+  background: #6c63ff;
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.load-more-btn:hover { background: #574fd6; transform: translateY(-1px); }
