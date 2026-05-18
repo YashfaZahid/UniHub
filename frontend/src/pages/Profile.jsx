@@ -78,7 +78,7 @@ export default function Profile() {
       <div className="profile-container">
         
         <div className="profile-image-box" onClick={() => fileInputRef.current.click()}>
-          <img src={profile.profile_image || 'https://via.placeholder.com/150'} alt="Profile" />
+          <img src={profile.profile_image || "https://placehold.co/150"} alt="Profile" />
           <input type="file" ref={fileInputRef} onChange={handleImageUpload} style={{ display: 'none' }} />
           <div className="upload-hint">Change Photo</div>
         </div>
