@@ -1,139 +1,318 @@
-.marketplace-canvas {
-  background-color: #f2e2ec; 
-  padding: 40px 20px;
+/* ── Feed page layout (matches FeedPage.jsx class names) ── */
+
+.feed-wrapper {
   min-height: 100vh;
+  background: linear-gradient(180deg, #f8f7ff 0%, #fdf2f8 100%);
   display: flex;
   flex-direction: column;
+}
+
+/* Header */
+.feed-header {
+  background: #fff;
+  border-bottom: 1px solid #e8e4fd;
+  box-shadow: 0 2px 16px rgba(108, 99, 255, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.feed-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
   align-items: center;
-  font-family: system-ui, -apple-system, sans-serif;
+  gap: 24px;
+  flex-wrap: wrap;
 }
 
-/* Search bar styling styling at the top */
-.search-bar-wrapper {
-  width: 100%;
-  max-width: 750px;
-  margin-bottom: 30px;
+.feed-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
-.marketplace-search-input {
-  width: 100%;
-  padding: 14px 20px;
-  font-size: 1.1rem;
-  border-radius: 50px;
-  border: 2px solid #e0ccd7;
-  outline: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+.feed-logo .logo-icon {
+  font-size: 1.4rem;
+  color: #6c63ff;
 }
 
-/* Individual Request Block Container */
-.results-wrapper {
-  width: 100%;
-  max-width: 750px;
-}
-
-.request-group-container {
-  width: 100%;
-  margin-bottom: 50px;
-}
-
-/* Big Bold Heading: Request Title "Pasta" */
-.request-main-heading {
-  font-size: 3.4rem;
+.feed-logo .logo-text {
+  font-size: 1.35rem;
   font-weight: 800;
-  color: #000000;
-  margin: 0 0 24px 0;
-  padding-left: 10px;
-  letter-spacing: -1px;
+  color: #1a1a2e;
+  letter-spacing: -0.02em;
 }
 
-/* Vertical stack of green containers */
-.shops-pill-list {
-  display: flex;
-  flex-direction: column;
-  gap: 36px; 
-}
-
-/* THE GREEN ROUNDED RECTANGLE CONTAINER */
-.shop-green-pill {
-  background-color: #cbeebd; 
-  border-radius: 45px;       
-  padding: 35px;             
+.feed-search-wrap {
+  flex: 1;
+  min-width: 200px;
+  max-width: 520px;
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 30px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
 }
 
-/* Pure White Image Box on the Left */
-.pill-image-box {
-  width: 165px;
-  height: 165px;
-  background-color: #ffffff;
-  border-radius: 28px;       
+.feed-search-wrap .search-icon {
+  position: absolute;
+  left: 16px;
+  font-size: 0.95rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.feed-search {
+  width: 100%;
+  padding: 12px 44px 12px 44px;
+  border: 1px solid #e8e4fd;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  background: #f8f7ff;
+  color: #1a1a2e;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.feed-search:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+  background: #fff;
+}
+
+.feed-search-wrap .search-clear {
+  position: absolute;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #e8e4fd;
+  color: #6c63ff;
+  font-size: 0.75rem;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  overflow: hidden;
+  transition: background 0.2s;
 }
 
-.pill-image-box img {
+.feed-search-wrap .search-clear:hover {
+  background: #d4cefd;
+}
+
+/* Main content */
+.feed-main {
+  flex: 1;
+  max-width: 1200px;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+  box-sizing: border-box;
 }
 
-.image-placeholder-text {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #000000;
-}
-
-/* Text Content Column on the Right */
-.pill-info-side {
+/* Filter bar */
+.filter-bar {
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-/* Alignment for Shop Name and Star Rating inline */
-.pill-row-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
-.pill-shop-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #000000;
+.category-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
-.pill-rating {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #000000;
+.filter-bar .pill {
+  padding: 8px 16px;
+  border: 1px solid #e8e4fd;
+  border-radius: 50px;
+  background: #fff;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
-/* Rows matching your formatting */
-.pill-category {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #000000;
-  margin: 0 0 16px 0;
+.filter-bar .pill:hover {
+  border-color: #c4bafd;
+  color: #6c63ff;
 }
 
-.pill-tagline {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #000000;
-  line-height: 1.4;
+.filter-bar .pill.pill-active {
+  background: #6c63ff;
+  border-color: #6c63ff;
+  color: #fff;
+}
+
+.sort-select {
+  padding: 10px 36px 10px 14px;
+  border: 1px solid #e8e4fd;
+  border-radius: 12px;
+  background: #fff;
+  color: #1a1a2e;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.sort-select:focus {
+  border-color: #6c63ff;
+}
+
+.results-count {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 0 0 20px;
+}
+
+/* Shop grid */
+.feed-main .shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 64px 24px;
+  background: #fff;
+  border-radius: 20px;
+  border: 1px dashed #e8e4fd;
+}
+
+.empty-state .empty-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 1.25rem;
+  color: #1a1a2e;
+  margin: 0 0 8px;
+}
+
+.empty-state p {
+  color: #888;
   margin: 0;
 }
 
-.no-matches-text, .loading-text {
-  color: #555;
-  font-style: italic;
-  padding-left: 10px;
+/* Load more */
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
+}
+
+.load-more-btn {
+  padding: 12px 32px;
+  background: #fff;
+  border: 2px solid #6c63ff;
+  color: #6c63ff;
+  border-radius: 50px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.load-more-btn:hover {
+  background: #6c63ff;
+  color: #fff;
+}
+
+/* Skeleton loaders (feed-specific — avoids clash with ShopCard .shop-card) */
+.feed-skeleton-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(108, 99, 255, 0.06);
+}
+
+.feed-skeleton-card .skeleton-img {
+  height: 200px;
+  background: linear-gradient(90deg, #ede9fa 25%, #f5f3ff 50%, #ede9fa 75%);
+  background-size: 200% 100%;
+  animation: feed-shimmer 1.2s infinite;
+}
+
+.feed-skeleton-card .skeleton-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.feed-skeleton-card .skeleton-line {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #ede9fa 25%, #f5f3ff 50%, #ede9fa 75%);
+  background-size: 200% 100%;
+  animation: feed-shimmer 1.2s infinite;
+}
+
+.feed-skeleton-card .skeleton-line.wide {
+  width: 80%;
+}
+
+.feed-skeleton-card .skeleton-line.medium {
+  width: 55%;
+}
+
+.feed-skeleton-card .skeleton-line.narrow {
+  width: 35%;
+}
+
+@keyframes feed-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .feed-header-inner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 14px 16px;
+  }
+
+  .feed-search-wrap {
+    max-width: none;
+  }
+
+  .feed-main {
+    padding: 20px 16px 40px;
+  }
+
+  .feed-main .shop-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sort-select {
+    width: 100%;
+  }
 }

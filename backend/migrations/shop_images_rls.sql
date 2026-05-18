@@ -1,0 +1,37 @@
+-- Optional RLS for shop_images when using Supabase Auth sessions directly.
+-- The Flask backend uses SUPABASE_SERVICE_ROLE_KEY and enforces ownership in routes,
+-- so these policies are not required for the current architecture.
+
+-- Example owner-based policies (shop.owner_id = auth.uid()):
+--
+-- ALTER TABLE shop_images ENABLE ROW LEVEL SECURITY;
+--
+-- CREATE POLICY "Owners can read own shop images"
+--   ON shop_images FOR SELECT
+--   USING (
+--     EXISTS (
+--       SELECT 1 FROM shops
+--       WHERE shops.id = shop_images.shop_id
+--       AND shops.owner_id = auth.uid()
+--     )
+--   );
+--
+-- CREATE POLICY "Owners can insert own shop images"
+--   ON shop_images FOR INSERT
+--   WITH CHECK (
+--     EXISTS (
+--       SELECT 1 FROM shops
+--       WHERE shops.id = shop_images.shop_id
+--       AND shops.owner_id = auth.uid()
+--     )
+--   );
+--
+-- CREATE POLICY "Owners can update own shop images"
+--   ON shop_images FOR UPDATE
+--   USING (
+--     EXISTS (
+--       SELECT 1 FROM shops
+--       WHERE shops.id = shop_images.shop_id
+--       AND shops.owner_id = auth.uid()
+--     )
+--   );

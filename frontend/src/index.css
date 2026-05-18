@@ -36,7 +36,12 @@ body {
   background: #ec4899;
 }
 
-/* Smooth transitions */
-* {
-  transition: all 0.2s ease;
+/* Transitions on interactive elements only (avoid breaking grid/flex layout) */
+button,
+a,
+input,
+select,
+textarea {
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.2s ease;
 }

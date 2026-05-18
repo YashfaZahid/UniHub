@@ -25,7 +25,8 @@ export default function FeedPage() {
       .from('shops')
       .select(`
         *,
-        profiles ( name, profile_image )
+        profiles ( name, profile_image ),
+        shop_images ( image_url )
       `, { count: 'exact' })
 
     if (search.trim()) {
@@ -155,7 +156,7 @@ export default function FeedPage() {
         {loading && (
           <div className="shop-grid">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="shop-card skeleton">
+              <div key={i} className="feed-skeleton-card">
                 <div className="skeleton-img" />
                 <div className="skeleton-body">
                   <div className="skeleton-line wide" />

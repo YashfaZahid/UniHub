@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
+import { setAuthSession } from '../../api'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -22,8 +23,12 @@ export default function Login() {
       })
       
       if (response.data.token) {
-        localStorage.setItem('token', response.data.token)
-        localStorage.setItem('user_id', response.data.user_id)
+        setAuthSession({
+          token: response.data.token,
+          access_token: response.data.access_token,
+          user_id: response.data.user_id,
+          user: response.data.user ? { id: response.data.user_id, ...response.data.user } : { id: response.data.user_id },
+        })
         navigate('/profile')
       }
     } catch (err) {

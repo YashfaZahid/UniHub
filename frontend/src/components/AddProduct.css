@@ -1,0 +1,77 @@
+.add-product-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 26, 46, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.add-product-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  box-shadow: 0 20px 50px rgba(108, 99, 255, 0.2);
+}
+
+.add-product-modal h3 {
+  margin: 0 0 20px;
+  color: #1a1a2e;
+  font-size: 1.2rem;
+}
+
+.add-product-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  border: none;
+  background: #f0eeff;
+  color: #6c63ff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-product-input,
+.add-product-textarea {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 12px 16px;
+  border: 1px solid #e8e4fd;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.add-product-input:focus,
+.add-product-textarea:focus {
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.12);
+}
+
+.add-product-submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6c63ff, #a29bfe);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.add-product-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

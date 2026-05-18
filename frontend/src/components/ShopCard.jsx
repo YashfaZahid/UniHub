@@ -1,4 +1,6 @@
-import './ShopCard.css'
+import { useNavigate } from 'react-router-dom'
+import { getImageUrl } from '../../api'
+import './shopCard.css'
 
 const PLACEHOLDER = 'https://placehold.co/400x240/e8e0f0/6c63ff?text=No+Image'
 
@@ -15,8 +17,10 @@ function StarRating({ rating }) {
 }
 
 export default function ShopCard({ shop }) {
+  const navigate = useNavigate()
   const owner = shop.profiles
-  const coverImage = shop.cover_image ?? PLACEHOLDER
+  const shopImagePath = shop.shop_images?.[0]?.image_url
+  const coverImage = getImageUrl(shopImagePath) ?? shop.cover_image ?? PLACEHOLDER
 
   return (
     <div className="shop-card">
@@ -54,7 +58,12 @@ export default function ShopCard({ shop }) {
 
         <div className="shop-card-footer">
           <StarRating rating={shop.average_rating} />
-          <button className="view-shop-btn">View Shop →</button>
+          <button
+            className="view-shop-btn"
+            onClick={() => navigate(`/shop/${shop.id}`)}
+          >
+            View Shop →
+          </button>
         </div>
       </div>
     </div>
