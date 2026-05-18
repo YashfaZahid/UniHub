@@ -1,78 +1,128 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+import { useEffect, useState, useRef } from 'react';
 import { supabase } from '../supabaseClient';
 import './Profile.css';
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ bio: '' }); // Name removed from editable data
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     async function getProfile() {
-      setLoading(true);
-      // Hardcoded ID for development testing
-      const targetId = "edda4b7f-757a-491f-a65e-ddf2dc3842bd"; 
+      const userString = localStorage.getItem('user');
+      if (!userString) {
+        setLoading(false);
+        return; 
+      }
 
-      const { data, error } = await supabase
+      const user = JSON.parse(userString);
+      const { data } = await supabase
         .from('profiles')
-        .select(`name, bio, profile_image, skills, has_shop, shops (title)`)
-        .eq('id', targetId)
+        .select('*')
+        .eq('id', user.id)
         .single();
 
-      if (error) console.error("Error fetching data:", error);
-      else setProfile(data);
-      
+      if (data) {
+        setProfile(data);
+        setFormData({ bio: data.bio || '' });
+      }
       setLoading(false);
     }
     getProfile();
   }, []);
 
-  if (loading) return <div className="page-wrapper loading">Loading...</div>;
-  if (!profile) return <div className="page-wrapper error">Profile data not found.</div>;
+  async function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file || !profile) return;
+
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${profile.id}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(fileName, file, { upsert: true });
+
+    if (uploadError) {
+      alert("Error uploading: " + uploadError.message);
+    } else {
+      const { data } = supabase.storage.from('avatars').getPublicUrl(fileName);
+      await supabase.from('profiles').update({ profile_image: data.publicUrl }).eq('id', profile.id);
+      window.location.reload(); 
+    }
+  }
+
+  async function handleSave() {
+    if (!profile) return;
+    
+    const { error } = await supabase
+      .from('profiles')
+      .update({ bio: formData.bio }) // Only updating bio
+      .eq('id', profile.id);
+
+    if (!error) {
+      setProfile({ ...profile, bio: formData.bio });
+      setIsEditing(false);
+    } else {
+      alert("Error saving: " + error.message);
+    }
+  }
+
+  if (loading) return <div className="page-wrapper">Loading...</div>;
+  if (!profile) return <div className="page-wrapper">Please log in to view your profile.</div>;
 
   return (
     <div className="page-wrapper">
       <div className="profile-container">
         
-        {/* Top Section: Profile Picture */}
-        <div className="profile-image-box">
+        <div className="profile-image-box" onClick={() => fileInputRef.current.click()}>
           <img src={profile.profile_image || 'https://via.placeholder.com/150'} alt="Profile" />
+          <input type="file" ref={fileInputRef} onChange={handleImageUpload} style={{ display: 'none' }} />
+          <div className="upload-hint">Change Photo</div>
         </div>
 
-        {/* Middle Section: Info Grid (Inputs Style) */}
-        <div className="info-grid">
-          
-          <span className="label">Name:</span>
-          <div className="input-value-box">{profile.name}</div>
-          
-          <span className="label">Bio:</span>
-          <div className="input-value-box bio-text">{profile.bio || "No bio added."}</div>
-          
-          <span className="label">Skills:</span>
-          <div className="input-value-box skills-box">
-            {profile.skills?.map((s, i) => <span key={i} className="skill-tag">{s}</span>)}
+        <div className="profile-fields">
+          {/* Name - Always Read Only */}
+          <div className="field-group">
+            <label>Name</label>
+            <div className="static-field">{profile.name}</div>
           </div>
 
-          <span className="label">Shop:</span>
-          <div className="input-value-box shop-box">
-             {profile.has_shop && profile.shops ? profile.shops.title : "None"}
+          {/* Shop - Logic for "None" or Shop Name */}
+          <div className="field-group">
+            <label>Shop</label>
+            <div className="static-field">
+              {profile.has_shop ? (profile.shop_name || "Active Shop") : "None"}
+            </div>
+          </div>
+
+          {/* Bio - Editable */}
+          <div className="field-group">
+            <label>Bio</label>
+            {isEditing ? (
+              <textarea 
+                value={formData.bio} 
+                onChange={(e) => setFormData({ bio: e.target.value })} 
+                className="edit-field textarea"
+                placeholder="Write your bio..."
+              />
+            ) : (
+              <div className="static-field bio-text">{profile.bio || "No bio added yet"}</div>
+            )}
           </div>
         </div>
-      </div>
 
-      {/* Bottom Section: Buttons (outside main card) */}
-      <div className="action-button-group">
-        <button className="icon-button" onClick={() => navigate('/create-shop')}>
-  {profile.has_shop ? "Edit Shop" : "Create shop"} 
-  <span className="button-icon">🛍️</span>
-</button>
-
-<button className="icon-button" onClick={() => navigate('/create-request')}>
-  Create Request 
-  <span className="button-icon">💌</span>
-</button>
+        <div className="action-area">
+          {isEditing ? (
+            <button className="icon-button" onClick={handleSave}>Save Changes</button>
+          ) : (
+            <button className="icon-button" onClick={() => setIsEditing(true)}>Edit Profile</button>
+          )}
+        </div>
       </div>
     </div>
   );
 }
+

@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../supabaseClient'
 import ShopCard from '../components/ShopCard'
@@ -187,3 +188,5 @@ export default function FeedPage() {
     </div>
   )
 }
+
+

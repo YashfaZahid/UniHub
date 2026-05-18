@@ -6,6 +6,8 @@ import Signup from './pages/Signup'
 import FeedPage from './pages/FeedPage'  
 import Profile from './pages/Profile'
 import CreateShop from './pages/CreateShop'
+import CreateRequest from "./pages/CreateRequest";
+import BrowseRequests from "./pages/BrowseRequests";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/feed" element={<FeedPage />} />
         <Route path='/profile' element={<Profile />}/>
         <Route path='/create-shop' element={<CreateShop />}/>
+        <Route path='/createrequest' element={<CreateRequest />}/>
+        <Route path='/browserequest' element={<BrowseRequests />}/>
       </Routes>
     </Router>
   )

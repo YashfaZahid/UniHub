@@ -1,143 +1,116 @@
-/* Page Background */
-
-/* 1. Force the HTML and BODY to cover the whole screen and have your green color */
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100%;
-  background-color: #dfebe2; /* <--- Use your green color here! */
-}
-
-/* 2. Your page wrapper now just handles the layout and centering */
 .page-wrapper {
-  /* You can remove the background-color from here if you put it on the body */
+  background-color: #dfebe2;
   min-height: 100vh;
-  width: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  box-sizing: border-box;
 }
 
-/* Main Outer Container (Pinkish Card) */
 .profile-container {
-  background-color: #f7d7e7; /* Soft pinkish card */
-  border-radius: 30px;
-  padding: 50px;
+  background-color: white;
+  padding: 40px;
+  border-radius: 20px;
   width: 100%;
-  max-width: 600px; /* Adjust based on preference */
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  max-width: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .profile-image-box {
-  width: 150px;
-  height: 150px;
-  border-radius: 25px; /* Softer rounded picture */
-  overflow: hidden;
-  border: 4px solid #fff;
-  margin-bottom: 25px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.profile-image-box img { width: 100%; height: 100%; object-fit: cover; }
-
-/* The GRID Layout for Labels and Values */
-.info-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 75px 1fr; /* Label fixed width, value takes the rest */
-  gap: 15px 10px; /* More vertical space between rows */
-  align-items: center;
-}
-
-.label {
-  font-weight: bold;
-  color: #333;
-  text-align: left;
-  font-size: 0.95em;
-}
-
-/* These are the rounded white boxes that look like inputs */
-/* Update this specific block in your Profile.css */
-.input-value-box {
-  background-color: #ffffff;
-  border-radius: 50px; 
-  padding: 10px 18px;
-  min-height: 40px; 
-  display: flex;
-  align-items: center;
-  color: #555;
-  font-size: 0.95em;
-  box-sizing: border-box;
-  
-  /* ADD THESE TWO LINES */
-  border: 1px solid #ff6cb5; 
-}
-
-/* Special case for Bio (might need multi-line) */
-.bio-text {
-  min-height: 60px; /* Taller area for bio */
-  border-radius: 15px; /* Less rounded corners for taller box */
-  align-items: flex-start;
-  padding: 12px;
-}
-
-/* Skills/Tags Layout */
-.skills-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  min-height: auto; /* Skills can expand height if needed */
-  padding: 5px 12px;
-}
-
-.skill-tag {
-  background: #f0f0f0;
-  padding: 3px 10px;
-  border-radius: 10px;
-  font-size: 0.8em;
-}
-
-/* Bottom Button Group */
-.action-button-group {
-  display: flex;
-  justify-content: center;
-  gap: 15px; /* Space between buttons */
-  margin-top: 25px;
-}
-
-/* Icon Buttons with Emojis */
-.icon-button {
-  background-color: #ff6cb5;
-  color: #333;
-  border: 1px solid #ccc;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-weight: bold;
+  position: relative;
   cursor: pointer;
-  font-size: 0.9em;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  margin-bottom: 30px;
+  border: 3px solid #ff6cb5;
+}
+
+.profile-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-fields {
+  width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center; /* This centers the text/emoji inside the button */
-  gap: 8px;
-  transition: all 0.2s;
-  
-  /* --- ADD THESE TWO LINES --- */
-  flex: 1;           /* Forces buttons to share the space equally */
-  min-width: 150px;  /* Optional: Ensures they don't get too skinny on small screens */
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 30px;
 }
-.button-icon {
-  font-size: 2.5em; /* Increase this number to make the emoji bigger */
-  margin-left: 8px; /* Adds space between text and emoji */
+
+.field-group {
+  width: 100%;
 }
+
+.field-group label {
+  display: block;
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 5px;
+  margin-left: 15px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* This makes the display fields and input fields look equal */
+.static-field, .edit-field {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: 1px solid #eee;
+  background-color: #f9f9f9;
+  font-size: 1rem;
+  color: #333;
+  box-sizing: border-box;
+  min-height: 48px;
+}
+
+.edit-field {
+  border: 1px solid #ff6cb5;
+  background-color: white;
+  outline: none;
+}
+
+.textarea {
+  border-radius: 20px;
+  height: 100px;
+  resize: none;
+}
+
+.action-area {
+  width: 100%;
+}
+
+.icon-button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 50px;
+  background-color: #ff6cb5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: opacity 0.2s;
+}
+
 .icon-button:hover {
-  background-color: #ffffff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  opacity: 0.9;
+}
+
+.upload-hint {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  font-size: 10px;
+  text-align: center;
+  padding: 4px 0;
 }
