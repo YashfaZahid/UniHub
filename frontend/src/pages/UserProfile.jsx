@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
 import { getPublicProfile, followUser, clearAuthSession } from '../../api'
 import { uploadAvatar } from '../utils/avatarUpload'
@@ -24,6 +24,7 @@ function syncUserInStorage(profile) {
 export default function UserProfile() {
   const { userId: paramId } = useParams()
   const navigate = useNavigate()
+  const location = useLocation()
   const fileInputRef = useRef(null)
   const currentUserId = localStorage.getItem('user_id')
   const profileId = paramId || currentUserId
@@ -42,9 +43,12 @@ export default function UserProfile() {
       setLoading(false)
       return
     }
+    let cancelled = false
     async function load() {
+      setLoading(true)
       try {
         const data = await getPublicProfile(profileId)
+        if (cancelled) return
         setProfile(data)
         setFormData({
           bio: data.bio || '',
@@ -58,11 +62,22 @@ export default function UserProfile() {
       } catch (e) {
         console.error(e)
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     }
     load()
-  }, [profileId])
+    return () => {
+      cancelled = true
+    }
+  }, [profileId, location.key])
+
+  useEffect(() => {
+    if (!location.state?.shopCreated) return
+    setUploadSuccess('Shop created successfully!')
+    const timer = setTimeout(() => setUploadSuccess(''), 5000)
+    navigate('.', { replace: true, state: {} })
+    return () => clearTimeout(timer)
+  }, [location.state?.shopCreated, navigate])
 
   async function handleImageUpload(e) {
     const file = e.target.files?.[0]
@@ -268,6 +283,15 @@ export default function UserProfile() {
               </div>
             ) : (
               <p className="text-muted">No shops yet</p>
+            )}
+            {isOwnProfile && !(profile.shops?.length > 0) && (
+              <button
+                type="button"
+                className="profile-btn profile-create-shop-btn"
+                onClick={() => navigate('/create-shop')}
+              >
+                Create Shop
+              </button>
             )}
           </section>
 

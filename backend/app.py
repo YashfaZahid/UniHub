@@ -504,19 +504,38 @@ def create_shop():
         if existing_shop.data and len(existing_shop.data) > 0:
             return jsonify({"error": "Shop already exists"}), 409
 
-        title = request.form.get("title") or (request.get_json(silent=True) or {}).get("title")
-        description = request.form.get("description") or (request.get_json(silent=True) or {}).get("description", "")
-        phone = request.form.get("phone") or (request.get_json(silent=True) or {}).get("phone", "")
+        json_data = request.get_json(silent=True) or {}
+        title = (request.form.get("title") or json_data.get("title") or "").strip()
+        description = (request.form.get("description") or json_data.get("description") or "").strip()
+        phone = (request.form.get("phone") or json_data.get("phone") or "").strip()
+        category = (request.form.get("category") or json_data.get("category") or "").strip()
 
         tags_raw = request.form.get("tags")
         if tags_raw:
-            tags = json.loads(tags_raw) if isinstance(tags_raw, str) else tags_raw
+            try:
+                tags = json.loads(tags_raw) if isinstance(tags_raw, str) else tags_raw
+            except json.JSONDecodeError:
+                return jsonify({"error": "Invalid tags format"}), 400
         else:
-            json_data = request.get_json(silent=True) or {}
             tags = json_data.get("tags", [])
+
+        if not isinstance(tags, list):
+            return jsonify({"error": "Tags must be a list"}), 400
+
+        tags = [str(t).strip() for t in tags if str(t).strip()]
 
         if not title:
             return jsonify({"error": "Title required"}), 400
+        if len(title) > 120:
+            return jsonify({"error": "Title must be 120 characters or fewer"}), 400
+        if len(description) > 2000:
+            return jsonify({"error": "Description must be 2000 characters or fewer"}), 400
+        if phone:
+            digits = "".join(c for c in phone if c.isdigit())
+            if len(digits) < 7 or len(digits) > 15:
+                return jsonify({"error": "Invalid phone number"}), 400
+        if len(tags) > 20:
+            return jsonify({"error": "Maximum 20 tags allowed"}), 400
 
         shop_row = {
             "title": title,
@@ -524,7 +543,7 @@ def create_shop():
             "tags": tags,
             "phone": phone,
             "owner_id": user_id,
-            "category": "",
+            "category": category,
         }
         res = supabase.table("shops").insert(shop_row).execute()
 

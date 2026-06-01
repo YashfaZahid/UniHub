@@ -197,6 +197,17 @@
   background: var(--color-beige);
 }
 
+.profile-create-shop-btn {
+  margin-top: var(--space-4);
+  background: #722f37;
+  color: #ffffff;
+}
+
+.profile-create-shop-btn:hover:not(:disabled) {
+  background: #5a252c;
+  color: #ffffff;
+}
+
 .profile-products-list {
   list-style: none;
   margin-top: var(--space-3);
