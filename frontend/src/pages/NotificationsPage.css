@@ -1,0 +1,48 @@
+.notifications-page {
+  padding: var(--space-6);
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-6);
+}
+
+.notifications-list {
+  list-style: none;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.notification-item {
+  width: 100%;
+  text-align: left;
+  padding: var(--space-4) var(--space-5);
+  border: none;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-light);
+  cursor: pointer;
+  color: var(--color-text);
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item.unread {
+  background: var(--color-beige-light);
+  border-left: 4px solid var(--color-primary);
+}
+
+.notification-item time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-light);
+  display: block;
+  margin-top: var(--space-2);
+}

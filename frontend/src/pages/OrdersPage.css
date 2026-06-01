@@ -1,0 +1,109 @@
+.orders-page {
+  padding: var(--space-6);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.orders-page h1 {
+  margin-bottom: var(--space-4);
+}
+
+.orders-tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.orders-tabs button {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}
+
+.orders-tabs button.active {
+  background: var(--color-primary);
+  color: var(--color-beige-light);
+  border-color: var(--color-primary);
+}
+
+.orders-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.order-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+}
+
+.status-badge {
+  font-size: var(--font-size-xs);
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  text-transform: capitalize;
+  font-weight: var(--font-weight-semibold);
+}
+
+.status-pending { background: #f5edd8; color: #6b5a20; }
+.status-accepted { background: var(--color-success-bg); color: #2d5a2d; }
+.status-rejected { background: var(--color-danger-bg); color: var(--color-danger); }
+.status-preparing { background: #e8e4f0; color: var(--color-charcoal); }
+.status-shipped { background: #dce8f0; color: #2a4a5a; }
+.status-completed { background: var(--color-success-bg); color: #2d5a2d; }
+.status-cancelled { background: var(--color-beige-light); color: var(--color-text-muted); }
+
+.order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.order-actions button {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--color-beige-light);
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.order-actions button:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.order-actions button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.orders-section {
+  margin-bottom: var(--space-8);
+}
+
+.orders-section-title {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--space-4);
+  color: var(--color-text);
+  padding-bottom: var(--space-2);
+  border-bottom: 2px solid var(--color-beige);
+}
+
+.orders-section-empty {
+  margin-bottom: var(--space-4);
+}
+
+.orders-error {
+  margin-bottom: var(--space-4);
+}

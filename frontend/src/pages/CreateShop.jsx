@@ -5,8 +5,6 @@ import "./CreateShop.css";
 
 export default function CreateShop() {
   const navigate = useNavigate();
-  const categories = ["Food", "Fashion", "Electronics", "Services"];
-
   const [tagInput, setTagInput] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -15,7 +13,6 @@ export default function CreateShop() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    category: "",
     phone: "",
     tags: [],
   });
@@ -66,7 +63,6 @@ export default function CreateShop() {
       const payload = new FormData();
       payload.append("title", formData.title);
       payload.append("description", formData.description);
-      payload.append("category", formData.category);
       payload.append("phone", formData.phone);
       payload.append("tags", JSON.stringify(formData.tags));
 
@@ -130,21 +126,6 @@ export default function CreateShop() {
           value={formData.phone}
           onChange={handleChange}
         />
-
-        <select
-          name="category"
-          className="shop-select"
-          value={formData.category}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Category</option>
-          {categories.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
 
         <label className="shop-file-label">
           Shop Image (main)

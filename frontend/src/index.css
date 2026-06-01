@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
+
+@import './styles/theme.css';
+@import './styles/components.css';
 
 @tailwind base;
 @tailwind components;
@@ -10,38 +13,68 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #fdf2f8;
-  color: #1a1f36;
+html {
+  scroll-behavior: smooth;
 }
 
-/* Pink scrollbar */
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  color: var(--color-text);
+  background: linear-gradient(180deg, var(--color-off-white) 0%, var(--color-beige-light) 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: var(--line-height-tight);
+}
+
+a {
+  color: var(--color-primary);
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #fce7f3;
-  border-radius: 10px;
+  background: var(--color-beige-light);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #f472b6;
-  border-radius: 10px;
+  background: var(--color-beige);
+  border-radius: var(--radius-full);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ec4899;
+  background: var(--color-primary);
 }
 
-/* Transitions on interactive elements only (avoid breaking grid/flex layout) */
 button,
 a,
 input,
 select,
 textarea {
-  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease,
-    box-shadow 0.2s ease, transform 0.2s ease;
+  transition: color var(--transition-fast), background-color var(--transition-fast),
+    border-color var(--transition-fast), box-shadow var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.error-boundary {
+  text-align: center;
+  padding: var(--space-12);
+}
+
+.error-boundary button {
+  margin-top: var(--space-4);
 }

@@ -1,0 +1,79 @@
+/**
+ * UniHub design system — wine & beige palette
+ */
+:root {
+  /* Brand */
+  --color-primary: #7b1e3a;
+  --color-primary-dark: #5a132b;
+  --color-primary-hover: #6a1a33;
+
+  /* Neutrals */
+  --color-charcoal: #2e2e2e;
+  --color-charcoal-soft: #3c3c3c;
+  --color-text: #1f1f1f;
+  --color-text-muted: #5c5c5c;
+  --color-text-light: #8a8a8a;
+
+  /* Surfaces */
+  --color-beige: #e8dccb;
+  --color-beige-light: #f5efe6;
+  --color-off-white: #faf8f4;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-border: #e0d6c8;
+  --color-border-light: #efe8dc;
+
+  /* Semantic */
+  --color-danger: #5a132b;
+  --color-danger-bg: #f8e8ec;
+  --color-success-bg: #e8f0e8;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.65;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(46, 46, 46, 0.06);
+  --shadow-md: 0 4px 14px rgba(46, 46, 46, 0.08);
+  --shadow-lg: 0 8px 28px rgba(46, 46, 46, 0.1);
+  --shadow-hover: 0 10px 32px rgba(123, 30, 58, 0.12);
+
+  /* Layout */
+  --nav-height: 64px;
+  --content-max-width: 1200px;
+
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.22s ease;
+}

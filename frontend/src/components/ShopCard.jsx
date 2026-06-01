@@ -1,71 +1,67 @@
-import { useNavigate } from 'react-router-dom'
-import { getImageUrl } from '../../api'
-import './shopCard.css'
-
-const PLACEHOLDER = 'https://placehold.co/400x240/e8e0f0/6c63ff?text=No+Image'
-
-function StarRating({ rating }) {
-  const stars = Math.round(rating ?? 0)
-  return (
-    <span className="star-rating" title={`${rating ?? 0} out of 5`}>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i} className={i < stars ? 'star filled' : 'star'}>★</span>
-      ))}
-      <span className="rating-num">{rating ? Number(rating).toFixed(1) : 'New'}</span>
-    </span>
-  )
-}
-
-export default function ShopCard({ shop }) {
-  const navigate = useNavigate()
-  const owner = shop.profiles
-  const shopImagePath = shop.shop_images?.[0]?.image_url
-  const coverImage = getImageUrl(shopImagePath) ?? shop.cover_image ?? PLACEHOLDER
-
-  return (
-    <div className="shop-card">
-      <div className="shop-card-img-wrap">
-        <img
-          src={coverImage}
-          alt={shop.title}
-          className="shop-card-img"
-          onError={e => { e.target.src = PLACEHOLDER }}
-        />
-        {shop.category && (
-          <span className="shop-category-badge">{shop.category}</span>
-        )}
-      </div>
-
-      <div className="shop-card-body">
-        <h3 className="shop-title">{shop.title}</h3>
-
-        <div className="shop-owner">
-          {owner?.profile_image ? (
-            <img src={owner.profile_image} alt={owner.name} className="owner-avatar" />
-          ) : (
-            <div className="owner-avatar placeholder-avatar">
-              {(owner?.name ?? 'U')[0].toUpperCase()}
-            </div>
-          )}
-          <span className="owner-name">{owner?.name ?? 'Unknown'}</span>
-        </div>
-
-        <p className="shop-desc">
-          {shop.description?.length > 90
-            ? shop.description.slice(0, 90) + '…'
-            : shop.description ?? 'No description provided.'}
-        </p>
-
-        <div className="shop-card-footer">
-          <StarRating rating={shop.average_rating} />
-          <button
-            className="view-shop-btn"
-            onClick={() => navigate(`/shop/${shop.id}`)}
-          >
-            View Shop →
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+import { useNavigate } from 'react-router-dom'
+import {
+  getShopCoverUrl,
+  getProfileImageUrl,
+  handleImageError,
+  SHOP_PLACEHOLDER,
+  AVATAR_PLACEHOLDER,
+} from '../utils/images'
+import './shopCard.css'
+
+export default function ShopCard({ shop }) {
+  const navigate = useNavigate()
+  const owner = shop.profiles
+  const ownerId = shop.owner_id || owner?.id
+  const coverImage = getShopCoverUrl(shop)
+  const avatarUrl = getProfileImageUrl(owner)
+
+  const goToProfile = (e) => {
+    e.stopPropagation()
+    if (ownerId) navigate(`/profile/${ownerId}`)
+  }
+
+  return (
+    <div className="shop-card">
+      <div className="shop-card-img-wrap" onClick={() => navigate(`/shop/${shop.id}`)} role="button" tabIndex={0}>
+        <img
+          src={coverImage}
+          alt={shop.title}
+          className="shop-card-img"
+          loading="lazy"
+          onError={(e) => handleImageError(e, SHOP_PLACEHOLDER)}
+        />
+      </div>
+
+      <div className="shop-card-body">
+        <h3 className="shop-title">{shop.title}</h3>
+
+        <button type="button" className="shop-owner shop-owner-btn" onClick={goToProfile}>
+          <img
+            src={avatarUrl}
+            alt={owner?.name ?? 'Owner'}
+            className="owner-avatar avatar avatar-sm"
+            onError={(e) => handleImageError(e, AVATAR_PLACEHOLDER)}
+          />
+          <span className="owner-name">{owner?.name ?? 'Unknown'}</span>
+        </button>
+
+        <p className="shop-desc">
+          {shop.description?.length > 90
+            ? shop.description.slice(0, 90) + '…'
+            : shop.description ?? 'No description provided.'}
+        </p>
+
+        <div className="shop-card-footer">
+          <button
+            type="button"
+            className="view-shop-btn"
+            onClick={() => navigate(`/shop/${shop.id}`)}
+          >
+            View Shop →
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
