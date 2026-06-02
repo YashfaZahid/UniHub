@@ -8,6 +8,7 @@ export default function EditShop({ shop, shopId, onUpdated, onClose }) {
   const existingImage = shop.shop_images?.[0]?.image_url ?? "";
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState(shop.tags ?? []);
+  const [description, setDescription] = useState(shop.description ?? "");
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(
     getImageUrl(existingImage) ?? PLACEHOLDER
@@ -52,6 +53,7 @@ export default function EditShop({ shop, shopId, onUpdated, onClose }) {
       const payload = new FormData();
       payload.append("shop_id", shopId);
       payload.append("tags", JSON.stringify(tags));
+      payload.append("description", description);
 
       if (imageFile) {
         payload.append("image", imageFile, imageFile.name);
@@ -114,7 +116,14 @@ export default function EditShop({ shop, shopId, onUpdated, onClose }) {
               }
             }}
           />
-
+          <label className="edit-shop-label">Description</label>
+<textarea
+  className="edit-shop-input"
+  rows={4}
+  placeholder="Enter shop description"
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+/>
           <label className="edit-shop-label">Tags</label>
           <div className="edit-shop-tag-row">
             <input

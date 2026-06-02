@@ -603,57 +603,109 @@ def _apply_shop_update(shop_id):
     print(f"[UPDATE_SHOP] shop_id={shop_id}, user_id={user_id}")
     print(f"[UPDATE_SHOP] form keys={list(request.form.keys())}")
     print(f"[UPDATE_SHOP] files={list(request.files.keys())}")
+
     if request.form.get("tags") is not None:
         print(f"[UPDATE_SHOP] tags raw={request.form.get('tags')[:200]}")
+
     if request.form.get("image_url"):
         print(f"[UPDATE_SHOP] image_url={request.form.get('image_url')}")
+
+    if request.form.get("description"):
+        print(f"[UPDATE_SHOP] description={request.form.get('description')[:100]}")
 
     shop_row = _log_supabase(
         "shops select title",
         supabase_admin.table("shops").select("title").eq("id", shop_id).execute(),
     )
+
     shop_title = shop_row.data[0]["title"] if shop_row.data else "Shop"
 
     updated_image = None
 
     tags_raw = request.form.get("tags")
+    description = request.form.get("description")
+
     if tags_raw is None and request.is_json:
         json_body = request.get_json(silent=True) or {}
+
         tags_raw = json_body.get("tags")
+
         if isinstance(tags_raw, list):
             tags_raw = json.dumps(tags_raw)
 
+        description = json_body.get("description")
+
+    # Build update payload
+    update_data = {}
+
     if tags_raw is not None:
-        tags = json.loads(tags_raw) if isinstance(tags_raw, str) else tags_raw
+        tags = json.loads(tags_raw) if isinstance(tags_raw, str) else tags
+
         if not isinstance(tags, list):
             return jsonify({"error": "tags must be a JSON array"}), 400
+
+        update_data["tags"] = tags
+
+    if description is not None:
+        update_data["description"] = description.strip()
+
+    if update_data:
         _log_supabase(
-            "shops update tags",
-            supabase_admin.table("shops").update({"tags": tags}).eq("id", shop_id).execute(),
+            "shops update",
+            supabase_admin.table("shops")
+            .update(update_data)
+            .eq("id", shop_id)
+            .execute(),
         )
 
     image = request.files.get("image")
+
     image_url_input = (request.form.get("image_url") or "").strip()
+
     if not image_url_input and request.is_json:
-        image_url_input = (request.get_json(silent=True) or {}).get("image_url", "").strip()
+        image_url_input = (
+            request.get_json(silent=True) or {}
+        ).get("image_url", "").strip()
 
     if image and image.filename:
         if not allowed_file(image.filename):
-            return jsonify({"error": "Invalid image type. Allowed: png, jpg, jpeg, gif, webp"}), 400
-        local_url, caption = _save_shop_image_file(shop_id, image, shop_title)
-        updated_image = _upsert_main_shop_image(shop_id, local_url, caption)
+            return jsonify(
+                {
+                    "error": "Invalid image type. Allowed: png, jpg, jpeg, gif, webp"
+                }
+            ), 400
+
+        local_url, caption = _save_shop_image_file(
+            shop_id,
+            image,
+            shop_title,
+        )
+
+        updated_image = _upsert_main_shop_image(
+            shop_id,
+            local_url,
+            caption,
+        )
+
     elif image_url_input:
-        updated_image = _upsert_main_shop_image(shop_id, image_url_input, shop_title)
+        updated_image = _upsert_main_shop_image(
+            shop_id,
+            image_url_input,
+            shop_title,
+        )
 
     shop = _fetch_shop_with_relations(shop_id)
+
     if not shop:
         return jsonify({"error": "Shop not found"}), 404
 
-    return jsonify({
-        "message": "Shop updated successfully",
-        "shop": shop,
-        "shop_image": updated_image,
-    }), 200
+    return jsonify(
+        {
+            "message": "Shop updated successfully",
+            "shop": shop,
+            "shop_image": updated_image,
+        }
+    ), 200
 
 
 @app.route("/api/shops/<shop_id>", methods=["PATCH"])
