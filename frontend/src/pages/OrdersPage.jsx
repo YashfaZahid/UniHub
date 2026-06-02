@@ -98,13 +98,11 @@ function OrderCard({ order, role, onStatus, updatingId }) {
 
       <p className="order-meta">
 
+        Unit: {order.unit_price != null ? `Rs. ${Number(order.unit_price).toFixed(2)}` : '—'}
+        {' · '}
         Qty: {order.quantity ?? 1}
-
-        {order.total_price != null && (
-
-          <> · Total: {Number(order.total_price).toFixed(2)}</>
-
-        )}
+        {' · '}
+        Total: {order.total_price != null ? `Rs. ${Number(order.total_price).toFixed(2)}` : '—'}
 
       </p>
 

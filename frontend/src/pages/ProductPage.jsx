@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 
 import { useParams, useNavigate, Link } from 'react-router-dom'
 
@@ -25,6 +25,8 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true)
 
   const [notes, setNotes] = useState('')
+
+  const [quantity, setQuantity] = useState(1)
 
   const [orderLoading, setOrderLoading] = useState(false)
 
@@ -69,6 +71,27 @@ export default function ProductPage() {
   const isOwner = Boolean(ownerId && userId && String(userId) === String(ownerId))
 
   const showMarketplaceActions = product && !isOwner
+
+  const clampQuantity = (next) => {
+    const n = Number(next)
+    if (!Number.isFinite(n)) return 1
+    return Math.max(1, Math.floor(n))
+  }
+
+  const unitPrice = useMemo(() => {
+    const raw = product?.price_or_range
+    if (raw == null) return null
+    const text = String(raw).replace(/,/g, '')
+    const match = text.match(/\d+\.?\d*/)
+    if (!match) return null
+    const value = Number(match[0])
+    return Number.isFinite(value) ? value : null
+  }, [product?.price_or_range])
+
+  const totalAmount = useMemo(() => {
+    if (unitPrice == null) return null
+    return Math.round(unitPrice * quantity * 100) / 100
+  }, [unitPrice, quantity])
 
 
 
@@ -166,13 +189,16 @@ export default function ProductPage() {
 
     try {
 
+      const safeQty = clampQuantity(quantity)
+      if (safeQty !== quantity) setQuantity(safeQty)
+
       const order = await createOrder({
 
         product_id: id,
 
         notes,
 
-        quantity: 1,
+        quantity: safeQty,
 
       })
 
@@ -361,6 +387,57 @@ export default function ProductPage() {
                   disabled={orderLoading}
 
                 />
+
+                <div className="product-qty-card" aria-label="Order quantity and totals">
+                  <div className="product-qty-row">
+                    <span className="product-qty-label">Unit Price</span>
+                    <span className="product-qty-value">
+                      {unitPrice == null ? (product.price_or_range || '—') : `Rs. ${unitPrice}`}
+                    </span>
+                  </div>
+
+                  <div className="product-qty-row product-qty-controls">
+                    <span className="product-qty-label">Quantity</span>
+                    <div className="product-qty-stepper">
+                      <button
+                        type="button"
+                        className="qty-btn"
+                        onClick={() => setQuantity((q) => clampQuantity(q - 1))}
+                        disabled={orderLoading || quantity <= 1}
+                        aria-label="Decrease quantity"
+                      >
+                        −
+                      </button>
+                      <input
+                        className="qty-input"
+                        type="number"
+                        min={1}
+                        step={1}
+                        inputMode="numeric"
+                        value={quantity}
+                        onChange={(e) => setQuantity(clampQuantity(e.target.value))}
+                        disabled={orderLoading}
+                        aria-label="Quantity"
+                      />
+                      <button
+                        type="button"
+                        className="qty-btn"
+                        onClick={() => setQuantity((q) => clampQuantity(q + 1))}
+                        disabled={orderLoading}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="product-qty-row">
+                    <span className="product-qty-label">Total Amount</span>
+                    <span className="product-qty-value">
+                      {totalAmount == null ? '—' : `Rs. ${totalAmount}`}
+                    </span>
+                  </div>
+                </div>
 
                 <button
 
