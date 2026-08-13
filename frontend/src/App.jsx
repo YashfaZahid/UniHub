@@ -7,6 +7,7 @@ import FeedPage from './pages/FeedPage'
 import UserProfile from './pages/UserProfile'
 import CreateShop from './pages/CreateShop'
 import ShopPage from './pages/ShopPage'
+import ShopInsightsPage from './pages/ShopInsightsPage'
 import ProductPage from './pages/ProductPage'
 import MessagesPage from './pages/MessagesPage'
 import OrdersPage from './pages/OrdersPage'
@@ -24,6 +25,7 @@ function App() {
         <Route path="/profile/:userId" element={<UserProfile />} />
         <Route path="/create-shop" element={<CreateShop />} />
         <Route path="/shop/:id" element={<ShopPage />} />
+        <Route path="/shop/:id/insights" element={<ShopInsightsPage />} />
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/messages" element={<MessagesPage />} />
         <Route path="/orders" element={<OrdersPage />} />

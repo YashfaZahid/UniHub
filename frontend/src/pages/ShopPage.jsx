@@ -334,11 +334,30 @@ export default function ShopPage() {
 
               {isOwner && (
 
-                <button type="button" className="btn btn-secondary edit-shop-btn" onClick={() => setShowEditShop(true)}>
+                <div className="shop-page-owner-actions">
 
-                  Edit Shop
+                  <button
 
-                </button>
+                    type="button"
+
+                    className="btn btn-ghost shop-insights-btn"
+
+                    onClick={() => navigate(`/shop/${id}/insights`)}
+
+                  >
+
+                    Insights
+
+
+                  </button>
+
+                  <button type="button" className="btn btn-secondary edit-shop-btn" onClick={() => setShowEditShop(true)}>
+
+                    Edit Shop
+
+                  </button>
+
+                </div>
 
               )}
 

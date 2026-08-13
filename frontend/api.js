@@ -93,6 +93,11 @@ export const getProducts = async (shopId) => {
   return res.data;
 };
 
+export const getShopInsights = async (shopId) => {
+  const res = await api.get(`/api/shops/${shopId}/insights`);
+  return res.data;
+};
+
 export const createProduct = async (shopId, payload) => {
   const token = getAuthToken();
   const isFormData = typeof FormData !== "undefined" && payload instanceof FormData;
