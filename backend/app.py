@@ -9,6 +9,7 @@ from flask_jwt_extended import (
 )
 from functools import wraps
 from datetime import timedelta, datetime, timezone
+from collections import defaultdict
 import os
 import json
 import uuid
@@ -585,6 +586,195 @@ def get_shop(shop_id):
         return jsonify(shop)
 
     except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+def _parse_order_day(created_at):
+    if not created_at:
+        return None
+    try:
+        text = str(created_at).replace("Z", "+00:00")
+        parsed = datetime.fromisoformat(text)
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc).date().isoformat()
+    except (TypeError, ValueError):
+        return str(created_at)[:10] or None
+
+
+def _money(value):
+    try:
+        return round(float(value or 0), 2)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+@app.route("/api/shops/<shop_id>/insights", methods=["GET"])
+@require_auth
+def get_shop_insights(shop_id):
+    try:
+        user_id = g.user_id
+        shop_res = (
+            supabase_admin.table("shops")
+            .select("id, title, owner_id")
+            .eq("id", shop_id)
+            .limit(1)
+            .execute()
+        )
+        if not shop_res.data:
+            return jsonify({"error": "Shop not found"}), 404
+        shop = shop_res.data[0]
+        if str(shop.get("owner_id")) != str(user_id):
+            return jsonify({"error": "Only the shop owner can view insights"}), 403
+
+        products_res = (
+            supabase_admin.table("products")
+            .select("id, title, price_or_range, created_at")
+            .eq("shop_id", shop_id)
+            .execute()
+        )
+        products = products_res.data or []
+        product_ids = {str(p["id"]) for p in products if p.get("id")}
+        product_titles = {str(p["id"]): p.get("title") or "Untitled" for p in products if p.get("id")}
+
+        orders = []
+        if product_ids:
+            orders_res = (
+                supabase_admin.table("orders")
+                .select(
+                    "id, product_id, status, quantity, unit_price, total_price, created_at, "
+                    "products(id, title, shop_id)"
+                )
+                .eq("seller_id", user_id)
+                .order("created_at", desc=True)
+                .execute()
+            )
+            for row in orders_res.data or []:
+                nested = row.get("products") or {}
+                pid = str(row.get("product_id") or "")
+                nested_shop = str(nested.get("shop_id") or "")
+                if pid in product_ids or nested_shop == str(shop_id):
+                    orders.append(row)
+
+        lost_statuses = {"cancelled", "rejected"}
+        completed_statuses = {"completed"}
+        pipeline_statuses = {"accepted", "preparing", "shipped"}
+
+        status_counts = defaultdict(int)
+        status_totals = defaultdict(float)
+        product_stats = defaultdict(lambda: {"units": 0, "revenue": 0.0, "orders": 0})
+
+        today = datetime.now(timezone.utc).date()
+        sales_by_day = {}
+        for i in range(29, -1, -1):
+            day = (today - timedelta(days=i)).isoformat()
+            sales_by_day[day] = {"date": day, "orders": 0, "revenue": 0.0, "units": 0}
+
+        total_orders = len(orders)
+        units_sold = 0
+        revenue = 0.0
+        pipeline_value = 0.0
+        pending_orders = 0
+        completed_count = 0
+        completed_units = 0
+
+        for order in orders:
+            status = str(order.get("status") or "pending").strip().lower()
+            qty = int(order.get("quantity") or 1)
+            if qty < 1:
+                qty = 1
+            total = _money(order.get("total_price"))
+            if total <= 0:
+                total = round(_money(order.get("unit_price")) * qty, 2)
+
+            status_counts[status] += 1
+            status_totals[status] += total
+
+            if status == "pending":
+                pending_orders += 1
+            if status in completed_statuses:
+                revenue += total
+                completed_count += 1
+                completed_units += qty
+            if status in pipeline_statuses:
+                pipeline_value += total
+            if status not in lost_statuses:
+                units_sold += qty
+                pid = str(order.get("product_id") or "")
+                nested = order.get("products") or {}
+                title = nested.get("title") or product_titles.get(pid) or "Unknown product"
+                stats = product_stats[pid or title]
+                stats["product_id"] = pid or None
+                stats["title"] = title
+                stats["units"] += qty
+                stats["revenue"] += total
+                stats["orders"] += 1
+
+                day = _parse_order_day(order.get("created_at"))
+                if day in sales_by_day:
+                    sales_by_day[day]["orders"] += 1
+                    sales_by_day[day]["revenue"] = round(sales_by_day[day]["revenue"] + total, 2)
+                    sales_by_day[day]["units"] += qty
+
+        top_products = sorted(
+            product_stats.values(),
+            key=lambda item: (item["units"], item["revenue"]),
+            reverse=True,
+        )[:8]
+        for item in top_products:
+            item["revenue"] = round(item["revenue"], 2)
+
+        waiting = [
+            {"product_id": p["id"], "title": p.get("title") or "Untitled"}
+            for p in products
+            if str(p.get("id")) not in {k for k in product_stats.keys()}
+        ][:6]
+
+        status_order = [
+            "pending", "accepted", "preparing", "shipped", "completed", "rejected", "cancelled",
+        ]
+        status_breakdown = []
+        for status in status_order:
+            count = status_counts.get(status, 0)
+            if count:
+                status_breakdown.append({
+                    "status": status,
+                    "count": count,
+                    "total": round(status_totals.get(status, 0), 2),
+                })
+        for status, count in status_counts.items():
+            if status not in status_order:
+                status_breakdown.append({
+                    "status": status,
+                    "count": count,
+                    "total": round(status_totals.get(status, 0), 2),
+                })
+
+        average_order_value = round(revenue / completed_count, 2) if completed_count else 0.0
+        decided = total_orders - pending_orders
+        completion_rate = round((completed_count / decided) * 100, 1) if decided else 0.0
+
+        return jsonify({
+            "shop": {"id": shop.get("id"), "title": shop.get("title")},
+            "summary": {
+                "total_orders": total_orders,
+                "pending_orders": pending_orders,
+                "completed_orders": completed_count,
+                "units_sold": units_sold,
+                "completed_units": completed_units,
+                "revenue": round(revenue, 2),
+                "pipeline_value": round(pipeline_value, 2),
+                "average_order_value": average_order_value,
+                "completion_rate": completion_rate,
+                "listed_products": len(products),
+            },
+            "status_breakdown": status_breakdown,
+            "top_products": top_products,
+            "waiting_products": waiting,
+            "sales_by_day": list(sales_by_day.values()),
+        })
+    except Exception as e:
+        print(f"[INSIGHTS] failed: {type(e).__name__}: {e}")
         return jsonify({"error": str(e)}), 500
 
 
